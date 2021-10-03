@@ -1,0 +1,29 @@
+
+version: '3'
+
+services:
+  db:
+    container_name: studybuddy_db
+    env_file:
+      - .env
+    image: postgres:alpine
+    volumes:
+      - ./data/db:/var/lib/postgresql/data/
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+    container_name: studybuddy_web
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+
+
+
